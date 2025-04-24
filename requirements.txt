@@ -1,6 +1,6 @@
-!pip install requests_html -q
-!pip install plotly -q
-!pip install streamlit -q
-!pip install lxml_html_clean -q
-!pip install tensorflow -q
-!pip install pyngrok
+requests_html
+plotly
+streamlit
+lxml_html_clean
+tensorflow 
+pyngrok
