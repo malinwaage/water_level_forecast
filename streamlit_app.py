@@ -214,7 +214,9 @@ if inflow_data is not None:
     st.plotly_chart(fig_weather)
 
     st.header("Making Predictions")
-    X, y = prepare_sequences(dataset)
+    X, y = prepare_sequences(dataset, parameter)
+
+    st.success("Predictions completed!")
     y_pred = model.predict(X)
     st.success("Predictions completed!")
 
