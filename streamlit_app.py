@@ -1,3 +1,4 @@
+%%writefile streamlit_app.py
 
 
 # Import necessary libraries
@@ -193,8 +194,6 @@ weather_data = fetch_weather_data(start_date.strftime('%d.%m.%Y'), end_date.strf
 inflow_data = fetch_inflow_data(station_id, parameter, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
 
 
-st.plotly_chart(fig_weather)
-
 model = load_model(parameter)
 if inflow_data is not None:
     st.success("Data fetched successfully!")
@@ -224,4 +223,3 @@ if inflow_data is not None:
     st.plotly_chart(fig)
 else:
     st.error("Failed to fetch inflow data.")
-
