@@ -50,7 +50,7 @@ def load_model(parameter):
     if parameter == "1000":
         model = tf.keras.models.load_model('my_GRU_model_waterlevel.keras')
     elif parameter == "1001":
-        model = tf.keras.models.load_model('my_GRU_model_discharge.keras')
+        model = tf.keras.models.load_model('my_GRU_model_discharge3.keras')
     return model
 
 
