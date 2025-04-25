@@ -116,10 +116,13 @@ def fetch_inflow_data(station_id, parameter, start_date, end_date):
             df = df[['Date', 'value']].set_index('Date')
             df = df.resample('3h').mean()
             df.index = df.index.tz_localize(None)
-            return df.rename(columns={'value': 'inflow'})
+            # Rename the column based on the parameter:
+            if parameter == "1000":
+                return df.rename(columns={'value': 'waterlevel'})
+            elif parameter == "1001":
+                return df.rename(columns={'value': 'discharge'})
     st.error("Failed to fetch inflow data.")
     return None
-
 # Function to preprocess data
 def preprocess_data(weather_data, inflow_data):
     dataset = weather_data.join(inflow_data)
