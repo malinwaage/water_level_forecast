@@ -124,11 +124,15 @@ def fetch_inflow_data(station_id, parameter, start_date, end_date):
     st.error("Failed to fetch inflow data.")
     return None
 # Function to preprocess data
-def preprocess_data(weather_data, inflow_data):
+def preprocess_data(weather_data, inflow_data, parameter):  # Add parameter
     dataset = weather_data.join(inflow_data)
+    # Rename inflow column based on parameter
+    inflow_column = 'waterlevel' if parameter == "1000" else 'discharge'  
+    dataset = dataset.rename(columns={'value': inflow_column})  
     dataset = dataset.mask(dataset > 1000)
+
     for column in dataset.columns:
-        if column != 'inflow':
+        if column != inflow_column: # Update condition here
             dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
             dataset = dataset.interpolate(method='linear', limit_direction='both')
 
