@@ -190,7 +190,8 @@ if inflow_data is not None:
     st.success("Data fetched successfully!")
 
     st.header("Preprocessing Data")
-    dataset = preprocess_data(weather_data, inflow_data)
+    dataset = preprocess_data(weather_data, inflow_data, parameter)  # Pass 'parameter' here
+
     st.write("Data preprocessing completed!")
     
 
