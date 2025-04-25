@@ -124,6 +124,7 @@ def fetch_inflow_data(station_id, parameter, start_date, end_date):
     st.error("Failed to fetch inflow data.")
     return None
 # Function to preprocess data
+
 def preprocess_data(weather_data, inflow_data, parameter):  # Add parameter
     dataset = weather_data.join(inflow_data)
     # Rename inflow column based on parameter
@@ -138,19 +139,26 @@ def preprocess_data(weather_data, inflow_data, parameter):  # Add parameter
 
     return dataset
 
+
 # Function to prepare sequences
-def prepare_sequences(dataset):
+def prepare_sequences(dataset, parameter):  # Add 'parameter' argument
     X, y = [], []
+    # Get the correct column name
+    inflow_column = 'waterlevel' if parameter == "1000" else 'discharge' 
+
     for i in range(len(dataset) - SEQUENCE_LENGTH - FORECAST_HORIZON):
         X_seq = dataset.iloc[i:(i + SEQUENCE_LENGTH)].values
         forecast_values = dataset.iloc[i + SEQUENCE_LENGTH:i + SEQUENCE_LENGTH + FORECAST_HORIZON].values
-        forecast_values[:, dataset.columns.get_loc('inflow')] = 0
+        
+        # Use inflow_column instead of 'inflow'
+        forecast_values[:, dataset.columns.get_loc(inflow_column)] = 0  
+        
         X_seq_with_forecast = np.concatenate([X_seq, forecast_values])
         X.append(X_seq_with_forecast)
-        y.append(dataset['inflow'].iloc[i + SEQUENCE_LENGTH:i + SEQUENCE_LENGTH + FORECAST_HORIZON].values)
+        
+        # Use inflow_column instead of 'inflow'
+        y.append(dataset[inflow_column].iloc[i + SEQUENCE_LENGTH:i + SEQUENCE_LENGTH + FORECAST_HORIZON].values)  
     return np.array(X), np.array(y)
-
-
 # Function to plot predictions
 def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
