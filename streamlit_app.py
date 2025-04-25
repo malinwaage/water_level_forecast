@@ -38,7 +38,7 @@ and 91%-78% accuracy for discharge predictions. Data is collected from NVE's ope
 """)
 st.sidebar.header("User Inputs")
 station_id = st.sidebar.text_input("Station ID", "77.3.0")
-parameter = st.sidebar.selectbox("Parameter", ["1000", "1001"], index=0)  # Selectbox for parameter
+parameter = st.sidebar.selectbox("Parameter (1001:inflow/discharge, 1000:water-level)", ["1000", "1001"], index=0)  # Selectbox for parameter
 forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
 today = datetime.now()  
 start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
@@ -167,8 +167,8 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
 
     # Use 'waterlevel' or 'discharge' based on parameter
     data_column = 'waterlevel' if parameter == "1000" else 'discharge'  
-    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset[data_column], mode='lines', name='Past Water Level', line=dict(color='blue')))
-    fig.add_trace(go.Scatter(x=plot_df.index, y=plot_df['Predicted'], mode='lines', name='Predicted', line=dict(color='red', dash='dash')))
+    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset[data_column], mode='lines', name='Past measures', line=dict(color='blue')))
+    fig.add_trace(go.Scatter(x=plot_df.index, y=plot_df['Predicted'], mode='lines', name='Predicted measures', line=dict(color='red', dash='dash')))
     
     # Update title based on parameter
     title = 'Water Level Prediction for Sogndalsvatn' if parameter == "1000" else 'Inflow Prediction for Sogndalsvatn'
@@ -204,11 +204,11 @@ if inflow_data is not None:
     
 
     # --- Create plot for temperature and precipitation ---
-    st.header("Temperature and Precipitation (Station 1)")
+    st.header("Temperature and Precipitation for Sogndalsvatn")
     fig_weather = go.Figure()
     fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['tm3h1'], mode='lines', name='Temperature', line=dict(color='orange')))
     fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['rr3h1'], mode='lines', name='Precipitation', line=dict(color='blue')))  # Assuming rr3h1 is precipitation
-    fig_weather.update_layout(title='Temperature and Precipitation (Station 1)',
+    fig_weather.update_layout(title='Past and forecasted measures',
                            xaxis_title='Date',
                            yaxis_title='Value')
     st.plotly_chart(fig_weather)
