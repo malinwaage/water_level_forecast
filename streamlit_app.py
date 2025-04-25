@@ -29,11 +29,39 @@ SEQUENCE_LENGTH = 24
 FORECAST_HORIZON = 24
 
 # Streamlit Inputs
-st.title("Water Level Prediction for Sogndalsvatn")
+st.title("Water Level/Discharge Prediction for Sogndalsvatn") # Updated title
+
+# Add description
+st.write("""
+This application predicts water levels and inflow for Sogndalsvatn using a GRU-based deep learning model, 
+which outperformed other methods. It uses temperature, precipitation, and historical data for forecasts 
+several days in advance on a three-hour basis. Tests showed 99%-92% accuracy for water level predictions 
+and 91%-78% accuracy for discharge predictions. Data is collected from NVE's open APIs.
+""")
 st.sidebar.header("User Inputs")
 station_id = st.sidebar.text_input("Station ID", "77.3.0")
-parameter = st.sidebar.text_input("Parameter", "1000")
-forecast_days = st.sidebar.slider("Forecast Days", 1, 7, 3)
+parameter = st.sidebar.selectbox("Parameter", ["1000", "1001"], index=0)  # Selectbox for parameter
+forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
+today = datetime.now()  
+start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
+end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
+
+# Load the trained model based on selected parameter
+#@st.cache_resource
+def load_model(parameter): 
+    if parameter == "1000":
+        model = tf.keras.models.load_model('my_GRU_model_tuned_waterlevel.h5')
+    elif parameter == "1001":
+        model = tf.keras.models.load_model('my_GRU_model_discharge.keras')
+    return model
+
+# Streamlit Inputs
+st.title("Water Level/Discharge Prediction for Sogndalsvatn") # Updated title
+st.sidebar.header("User Inputs")
+station_id = st.sidebar.text_input("Station ID", "77.3.0")
+parameter = st.sidebar.selectbox("Parameter", ["1000", "1001"], index=0)  # Selectbox for parameter
+forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
+today = datetime.now()  
 start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
 end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
 
@@ -51,7 +79,7 @@ import tensorflow as tf
 
 @st.cache_resource
 def load_model():
-    model = tf.keras.models.load_model('my_GRU_model_waterlevel.keras') # Load from the current directory
+    model = tf.keras.models.load_model('my_GRU_model_tuned_waterlevel.keras') # Load from the current directory
     return model
 
 # Correct way with raw string
@@ -130,16 +158,32 @@ def prepare_sequences(dataset):
         y.append(dataset['inflow'].iloc[i + SEQUENCE_LENGTH:i + SEQUENCE_LENGTH + FORECAST_HORIZON].values)
     return np.array(X), np.array(y)
 
+
 # Function to plot predictions
-def plot_predictions(dataset, y_pred):
+def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
     plot_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
     fig = go.Figure()
 
-    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset['inflow'], mode='lines', name='Past Water Level', line=dict(color='blue')))
+    # Use 'waterlevel' or 'discharge' based on parameter
+    data_column = 'waterlevel' if parameter == "1000" else 'discharge'  
+    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset[data_column], mode='lines', name='Past Water Level', line=dict(color='blue')))
     fig.add_trace(go.Scatter(x=plot_df.index, y=plot_df['Predicted'], mode='lines', name='Predicted', line=dict(color='red', dash='dash')))
-    fig.update_layout(title='Water Level Prediction for Sogndalsvatn', xaxis_title='Date', yaxis_title='Water Level')
+    
+    # Update title based on parameter
+    title = 'Water Level Prediction for Sogndalsvatn' if parameter == "1000" else 'Inflow Prediction for Sogndalsvatn'
+    fig.update_layout(title=title, xaxis_title='Date', yaxis_title=data_column.capitalize()) 
     return fig
+
+#def plot_predictions(dataset, y_pred):
+#    future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
+#    plot_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
+#    fig = go.Figure()
+
+#    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset['inflow'], mode='lines', name='Past Water Level', line=dict(color='blue')))
+#    fig.add_trace(go.Scatter(x=plot_df.index, y=plot_df['Predicted'], mode='lines', name='Predicted', line=dict(color='red', dash='dash')))
+#    fig.update_layout(title='Water Level Prediction for Sogndalsvatn', xaxis_title='Date', yaxis_title='Water Level')
+#    return fig
 
     return fig
 
@@ -148,13 +192,27 @@ st.header("Fetching Data")
 weather_data = fetch_weather_data(start_date.strftime('%d.%m.%Y'), end_date.strftime('%d.%m.%Y'))
 inflow_data = fetch_inflow_data(station_id, parameter, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
 
-model = load_model()
+
+st.plotly_chart(fig_weather)
+
+model = load_model(parameter)
 if inflow_data is not None:
     st.success("Data fetched successfully!")
 
     st.header("Preprocessing Data")
     dataset = preprocess_data(weather_data, inflow_data)
     st.write("Data preprocessing completed!")
+    
+
+    # --- Create plot for temperature and precipitation ---
+    st.header("Temperature and Precipitation (Station 1)")
+    fig_weather = go.Figure()
+    fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['tm3h1'], mode='lines', name='Temperature', line=dict(color='orange')))
+    fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['rr3h1'], mode='lines', name='Precipitation', line=dict(color='blue')))  # Assuming rr3h1 is precipitation
+    fig_weather.update_layout(title='Temperature and Precipitation (Station 1)',
+                           xaxis_title='Date',
+                           yaxis_title='Value')
+    st.plotly_chart(fig_weather)
 
     st.header("Making Predictions")
     X, y = prepare_sequences(dataset)
@@ -162,7 +220,8 @@ if inflow_data is not None:
     st.success("Predictions completed!")
 
     st.header("Prediction Results")
-    fig = plot_predictions(dataset, y_pred)
+    fig = plot_predictions(dataset, y_pred, parameter)
     st.plotly_chart(fig)
 else:
     st.error("Failed to fetch inflow data.")
+
