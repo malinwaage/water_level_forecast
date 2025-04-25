@@ -1,6 +1,3 @@
-%%writefile streamlit_app.py
-
-
 # Import necessary libraries
 import os
 import requests
