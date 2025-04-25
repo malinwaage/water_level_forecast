@@ -66,15 +66,7 @@ import tensorflow as tf
 # Download the model file to the current working directory
 #files.download('/content/drive/My Drive/models/my_GRU_model_waterlevel.keras')
 
-@st.cache_resource
 
-
-def load_model(parameter): 
-    if parameter == "1000":
-        model = tf.keras.models.load_model('my_GRU_model_waterlevel.h5')
-    elif parameter == "1001":
-        model = tf.keras.models.load_model('my_GRU_model_discharge.keras')
-    return model
 # Correct way with raw string
 #model = tf.keras.models.load_model(r"C:\Users\mwa\models\my_trained_model_water_level_Sogndalsvatn_April2024.keras")
 
