@@ -53,15 +53,6 @@ def load_model(parameter):
         model = tf.keras.models.load_model('my_GRU_model_discharge.keras')
     return model
 
-# Streamlit Inputs
-st.title("Water Level/Discharge Prediction for Sogndalsvatn") # Updated title
-st.sidebar.header("User Inputs")
-station_id = st.sidebar.text_input("Station ID", "77.3.0")
-parameter = st.sidebar.selectbox("Parameter", ["1000", "1001"], index=0)  # Selectbox for parameter
-forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
-today = datetime.now()  
-start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
-end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
 
 # Load the trained GRU model
 #@st.cache_resource
@@ -76,10 +67,14 @@ import tensorflow as tf
 #files.download('/content/drive/My Drive/models/my_GRU_model_waterlevel.keras')
 
 @st.cache_resource
-def load_model():
-    model = tf.keras.models.load_model('my_GRU_model_tuned_waterlevel.keras') # Load from the current directory
-    return model
 
+
+def load_model(parameter): 
+    if parameter == "1000":
+        model = tf.keras.models.load_model('my_GRU_model_waterlevel.h5')
+    elif parameter == "1001":
+        model = tf.keras.models.load_model('my_GRU_model_discharge.keras')
+    return model
 # Correct way with raw string
 #model = tf.keras.models.load_model(r"C:\Users\mwa\models\my_trained_model_water_level_Sogndalsvatn_April2024.keras")
 
