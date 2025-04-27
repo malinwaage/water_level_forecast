@@ -160,20 +160,65 @@ def prepare_sequences(dataset, parameter):  # Add 'parameter' argument
         y.append(dataset[inflow_column].iloc[i + SEQUENCE_LENGTH:i + SEQUENCE_LENGTH + FORECAST_HORIZON].values)  
     return np.array(X), np.array(y)
 # Function to plot predictions
-def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
-    future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
-    plot_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
-    fig = go.Figure()
 
-    # Use 'waterlevel' or 'discharge' based on parameter
-    data_column = 'waterlevel' if parameter == "1000" else 'discharge'  
-    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset[data_column], mode='lines', name='Past measures', line=dict(color='blue')))
-    fig.add_trace(go.Scatter(x=plot_df.index, y=plot_df['Predicted'], mode='lines', name='Predicted measures', line=dict(color='red')))
+def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
+    # Create future date range for the predictions
+    future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
     
-    # Update title based on parameter
+    # Create a DataFrame for predictions
+    predictions_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
+    
+    # Concatenate actual and predicted data
+    concatenated_actual = dataset.copy()
+    concatenated_actual = concatenated_actual.append(predictions_df)
+    
+    # Select the appropriate column based on the parameter
+    data_column = 'waterlevel' if parameter == "1000" else 'discharge'
+    
+    # Create the plot
+    fig = go.Figure()
+    
+    # Plot past actual data (historic measurements)
+    fig.add_trace(go.Scatter(
+        x=dataset.index,
+        y=dataset[data_column],
+        mode='lines',
+        name='Past measures',
+        line=dict(color='blue')
+    ))
+    
+    # Plot predicted data
+    fig.add_trace(go.Scatter(
+        x=predictions_df.index,
+        y=predictions_df['Predicted'],
+        mode='lines',
+        name='Predicted measures',
+        line=dict(color='red')
+    ))
+    
+    # Connect the historic actual data and predicted data
+    fig.add_trace(go.Scatter(
+        x=[dataset.index[-1], predictions_df.index[0]],
+        y=[dataset[data_column].iloc[-1], predictions_df['Predicted'].iloc[0]],
+        mode='lines',
+        name='Connection',
+        line=dict(color='green', dash='dash')
+    ))
+    
+    # Update title and y-axis based on the parameter
     title = 'Water Level Prediction for Sogndalsvatn' if parameter == "1000" else 'Inflow Prediction for Sogndalsvatn'
-    fig.update_layout(title=title, xaxis_title='Date', yaxis_title=data_column.capitalize()) 
+    yaxis_range = [0, 3] if parameter == "1000" else [0, 150]
+    yaxis_label = 'Water Level (m)' if parameter == "1000" else 'Discharge (m³/s)'
+    
+    fig.update_layout(
+        title=title,
+        xaxis_title='Date',
+        yaxis_title=yaxis_label,
+        yaxis=dict(range=yaxis_range)  # Set y-axis range
+    )
+    
     return fig
+
 
 #def plot_predictions(dataset, y_pred):
 #    future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
