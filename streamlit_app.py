@@ -122,7 +122,7 @@ def fetch_inflow_data(station_id, parameter, start_date, end_date):
             elif parameter == "1001":
                 return df.rename(columns={'value': 'discharge'})
     st.error("Failed to fetch inflow data.")
-    return None
+    return none
 # Function to preprocess data
 
 def preprocess_data(weather_data, inflow_data, parameter):  # Add parameter
@@ -206,8 +206,8 @@ if inflow_data is not None:
     # --- Create plot for temperature and precipitation ---
     st.header("Temperature and Precipitation for Sogndalsvatn")
     fig_weather = go.Figure()
-    fig_weather.add_trace(go.Scatter(x=df.index, y=df['tm3h1'], mode='lines', name='Temperature', line=dict(color='orange')))
-    fig_weather.add_trace(go.Scatter(x=df.index, y=df['rr3h1'], mode='lines', name='Precipitation', line=dict(color='blue')))  # Assuming rr3h1 is precipitation
+    fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['tm3h1'], mode='lines', name='Temperature', line=dict(color='orange')))
+    fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['rr3h1'], mode='lines', name='Precipitation', line=dict(color='blue')))  # Assuming rr3h1 is precipitation
     fig_weather.update_layout(title='Past and forecasted measures',
                            xaxis_title='Date',
                            yaxis_title='Value')
