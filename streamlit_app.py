@@ -206,8 +206,8 @@ if inflow_data is not None:
     # --- Create plot for temperature and precipitation ---
     st.header("Temperature and Precipitation for Sogndalsvatn")
     fig_weather = go.Figure()
-    fig_weather.add_trace(go.Scatter(x=dataset.index, y=df['tm3h1'], mode='lines', name='Temperature', line=dict(color='orange')))
-    fig_weather.add_trace(go.Scatter(x=dataset.index, y=df['rr3h1'], mode='lines', name='Precipitation', line=dict(color='blue')))  # Assuming rr3h1 is precipitation
+    fig_weather.add_trace(go.Scatter(x=df.index, y=df['tm3h1'], mode='lines', name='Temperature', line=dict(color='orange')))
+    fig_weather.add_trace(go.Scatter(x=df.index, y=df['rr3h1'], mode='lines', name='Precipitation', line=dict(color='blue')))  # Assuming rr3h1 is precipitation
     fig_weather.update_layout(title='Past and forecasted measures',
                            xaxis_title='Date',
                            yaxis_title='Value')
