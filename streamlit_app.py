@@ -42,7 +42,7 @@ parameter = st.sidebar.selectbox("Parameter (1001:inflow/discharge, 1000:water-l
 #forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
 today = datetime.now()  
 start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=14))
-end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=3))
+end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=1))
 
 # Load the trained model based on selected parameter
 #@st.cache_resource
