@@ -161,43 +161,21 @@ def prepare_sequences(dataset, parameter):  # Add 'parameter' argument
     return np.array(X), np.array(y)
 # Function to plot predictions
 
-def plot_predictions(dataset, y_pred, parameter):
-    # Create future date range for predictions
+    
+def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
-    
-    # Create a DataFrame for predictions
-    predictions_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
-    
-    # Concatenate actual and predicted data using pd.concat
-    plot_df = pd.concat([dataset, predictions_df])  
-    
-    # Select the appropriate column based on the parameter
-    data_column = 'waterlevel' if parameter == "1000" else 'discharge'
-    
-    # Create the plot
+    plot_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
     fig = go.Figure()
+
+    # Use 'waterlevel' or 'discharge' based on parameter
+    data_column = 'waterlevel' if parameter == "1000" else 'discharge'  
+    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset[data_column], mode='lines', name='Past measures', line=dict(color='blue')))
+    fig.add_trace(go.Scatter(x=plot_df.index, y=plot_df['Predicted'], mode='lines', name='Predicted measures', line=dict(color='red')))
     
-    # Plot past and predicted data in one trace with different modes
-    fig.add_trace(go.Scatter(
-        x=plot_df.index,
-        y=plot_df[data_column],  # Use the concatenated DataFrame
-        mode='lines',  # For connecting points in segments
-        name='Measurements',
-        line=dict(color=['blue'] * len(dataset) + ['red'] * len(predictions_df))  # Set color based on segment
-    ))
-    
-    # Update title, y-axis range, and label based on the parameter
+    # Update title based on parameter
     title = 'Water Level Prediction for Sogndalsvatn' if parameter == "1000" else 'Inflow Prediction for Sogndalsvatn'
-    yaxis_range = [0, 3] if parameter == "1000" else [0, 150]
-    yaxis_label = 'Water Level (m)' if parameter == "1000" else 'Discharge (m³/s)'
-    
-    fig.update_layout(
-        title=title,
-        xaxis_title='Date',
-        yaxis_title=yaxis_label,
-        yaxis=dict(range=yaxis_range)  # Set y-axis range
-    )
-    
+    fig.update_layout(title=title, xaxis_title='Date', yaxis_title=data_column.capitalize()) 
+
     
     return fig
 
