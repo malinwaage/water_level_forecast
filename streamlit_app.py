@@ -39,10 +39,10 @@ and 91%-78% accuracy for discharge predictions. Data is collected from NVE's ope
 st.sidebar.header("User Inputs")
 station_id = st.sidebar.text_input("Station ID", "77.3.0")
 parameter = st.sidebar.selectbox("Parameter (1001:inflow/discharge, 1000:water-level)", ["1000", "1001"], index=0)  # Selectbox for parameter
-forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
+#forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
 today = datetime.now()  
 start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=14))
-end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
+end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=3))
 
 # Load the trained model based on selected parameter
 #@st.cache_resource
