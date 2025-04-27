@@ -230,7 +230,7 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
 #    fig.update_layout(title='Water Level Prediction for Sogndalsvatn', xaxis_title='Date', yaxis_title='Water Level')
 #    return fig
 
-    return fig
+   # return fig
 
 # Main Streamlit App
 st.header("Fetching Data")
