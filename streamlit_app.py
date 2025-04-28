@@ -129,20 +129,23 @@ def fetch_inflow_data(station_id, parameter, start_date, end_date):
     return none
 # Function to preprocess data
 
-def preprocess_data(weather_data, inflow_data, parameter):  # Add parameter
+def preprocess_data(weather_data, inflow_data, parameter):
+    min_max_values = {}
     dataset = weather_data.join(inflow_data)
-    # Rename inflow column based on parameter
-    inflow_column = 'waterlevel' if parameter == "1000" else 'discharge'  
-    dataset = dataset.rename(columns={'value': inflow_column})  
+    inflow_column = 'waterlevel' if parameter == "1000" else 'discharge'
+    dataset = dataset.rename(columns={'value': inflow_column})
     dataset = dataset.mask(dataset > 1000)
 
     for column in dataset.columns:
-        if column != inflow_column: # Update condition here
-            dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
+        if column != inflow_column:
+            min_value = dataset[column].min()
+            max_value = dataset[column].max()
+            min_max_values[column] = {'min': min_value, 'max': max_value}
+            dataset[column] = (dataset[column] - min_value) / (max_value - min_value)
             dataset = dataset.interpolate(method='linear', limit_direction='both')
 
-    return dataset
-
+    return dataset, min_max_values
+    
 
 # Function to prepare sequences
 def prepare_sequences(dataset, parameter):  # Add 'parameter' argument
@@ -220,12 +223,9 @@ if inflow_data is not None:
 
     # --- Create plot for temperature and precipitation ---
     st.header("Temperature and Precipitation for Sogndalsvatn")
-    fig_weather = go.Figure()
-    fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['tm3h1'], mode='lines', name='Temperature', line=dict(color='orange')))
-    fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['rr3h1'], mode='lines', name='Precipitation', line=dict(color='blue')))  # Assuming rr3h1 is precipitation
-    fig_weather.update_layout(title='Past and forecasted measures',
-                           xaxis_title='Date',
-                           yaxis_title='Value')
+    dataset, min_max_values = preprocess_data(weather_data, inflow_data, parameter)
+
+    fig_weather = plot_denormalized_weather_data(dataset, min_max_values, '1')  # Replace '1' with the appropriate suffix
     st.plotly_chart(fig_weather)
 
     st.header("Making Predictions")
