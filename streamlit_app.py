@@ -43,7 +43,7 @@ forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
 today = datetime.now()  
 #start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
 #end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
-start_date = st.sidebar.date_input("Start Date", (datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d'))
+start_date = st.sidebar.date_input("Start Date", (datetime.now() - timedelta(days=20)).strftime('%Y-%m-%d'))
 #end_date = st.sidebar.date_input("End Date", (datetime.now() + timedelta(days=3)).strftime('%Y-%m-%d'))
 end_date = st.sidebar.date_input("End Date", (datetime.now() + timedelta(forecast_days)).strftime('%Y-%m-%d'))
 
@@ -183,7 +183,7 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     title=title,
     xaxis_title='Date',
     yaxis_title=data_column.capitalize(),
-    yaxis=dict(range=[0, 3] if parameter == "1000" else [0, 150])  # Adjust range based on parameter
+    yaxis=dict(range=[0.9, 2.8] if parameter == "1000" else [0, 150])  # Adjust range based on parameter
 )
 
     
