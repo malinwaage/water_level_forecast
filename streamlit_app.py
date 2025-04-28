@@ -198,7 +198,7 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
 # Main Streamlit App
 st.header("Fetching Data")
 weather_data = fetch_weather_data(start_date, end_date)
-inflow_data = fetch_inflow_data(station_id, parameter, start_date., end_date)
+inflow_data = fetch_inflow_data(station_id, parameter, start_date, end_date)
 
 
 model = load_model(parameter)
