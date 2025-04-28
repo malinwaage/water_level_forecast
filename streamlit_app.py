@@ -138,13 +138,9 @@ def preprocess_data(weather_data, inflow_data, parameter):
 
     for column in dataset.columns:
         if column != inflow_column:
-            #min_value = dataset[column].min()
-            #max_value = dataset[column].max()
-            #min_max_values[column] = {'min': min_value, 'max': max_value}
-            dataset[column] = (dataset[column] - min_value) / (max_value - min_value)
+            dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
             dataset = dataset.interpolate(method='linear', limit_direction='both')
-
-    return dataset, min_max_values
+    return dataset
     
 
 # Function to prepare sequences
