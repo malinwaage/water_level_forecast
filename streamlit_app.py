@@ -179,6 +179,12 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     # Update title based on parameter
     title = 'Water Level Prediction for Sogndalsvatn' if parameter == "1000" else 'Inflow Prediction for Sogndalsvatn'
     fig.update_layout(title=title, xaxis_title='Date', yaxis_title=data_column.capitalize()) 
+    fig.update_layout(
+    title=title,
+    xaxis_title='Date',
+    yaxis_title=data_column.capitalize(),
+    yaxis=dict(range=[0, 3] if parameter == "1000" else [0, 150])  # Adjust range based on parameter
+)
 
     
     return fig
