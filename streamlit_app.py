@@ -41,9 +41,12 @@ station_id = st.sidebar.text_input("Station ID", "77.3.0")
 parameter = st.sidebar.selectbox("Parameter (1001:inflow/discharge, 1000:water-level)", ["1000", "1001"], index=0)  # Selectbox for parameter
 forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
 today = datetime.now()  
-start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
-end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
+#start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
+#end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
+start_date = st.sidebar.date_input("Start Date", '2025-04-20')
+end_date = st.sidebar.date_input("End Date", '2025-04-28')
 
+#.strftime('%d.%m.%Y')
 # Load the trained model based on selected parameter
 #@st.cache_resource
 def load_model(parameter): 
@@ -194,8 +197,8 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
 
 # Main Streamlit App
 st.header("Fetching Data")
-weather_data = fetch_weather_data(start_date.strftime('%d.%m.%Y'), end_date.strftime('%d.%m.%Y'))
-inflow_data = fetch_inflow_data(station_id, parameter, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
+weather_data = fetch_weather_data(start_date, end_date)
+inflow_data = fetch_inflow_data(station_id, parameter, start_date., end_date)
 
 
 model = load_model(parameter)
