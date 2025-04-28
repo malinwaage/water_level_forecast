@@ -28,10 +28,19 @@ end_date = st.sidebar.date_input("End Date", pd.to_datetime("today") + pd.DateOf
 try:
     weather_data = fetch_weather_data(start_date.strftime('%d.%m.%Y'), end_date.strftime('%d.%m.%Y'))
     inflow_data = fetch_inflow_data(station_id, parameter, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
+    
+    # Debugging output
+    st.write("Weather Data Shape:", weather_data.shape)
+    st.write("Inflow Data Shape:", inflow_data.shape)
+
+    if inflow_data.empty:
+        st.error("Inflow data is empty. Please check the station ID and date range.")
+        st.stop()  # Stop further execution
+
     st.success("Data fetched successfully!")
 except Exception as e:
     st.error(f"Error fetching data: {str(e)}")
-
+    
 # Preprocess data
 if inflow_data is not None:
     dataset = preprocess_data(weather_data, inflow_data, parameter)
