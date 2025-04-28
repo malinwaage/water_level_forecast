@@ -220,12 +220,12 @@ if inflow_data is not None:
 
     st.write("Data preprocessing completed!")
     
-
-    # --- Create plot for temperature and precipitation ---
-    st.header("Temperature and Precipitation for Sogndalsvatn")
-    dataset, min_max_values = preprocess_data(weather_data, inflow_data, parameter)
-
-    fig_weather = plot_denormalized_weather_data(dataset, min_max_values, '1')  # Replace '1' with the appropriate suffix
+    fig_weather = go.Figure()
+    fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['tm3h1'], mode='lines', name='Temperature', line=dict(color='orange')))
+    fig_weather.add_trace(go.Scatter(x=dataset.index, y=dataset['rr3h1'], mode='lines', name='Precipitation', line=dict(color='blue')))
+    fig_weather.update_layout(title='Past and forecasted measures',
+                           xaxis_title='Date',
+                           yaxis_title='Value')
     st.plotly_chart(fig_weather)
 
     st.header("Making Predictions")
