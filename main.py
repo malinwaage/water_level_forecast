@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from config.constants import SEQUENCE_LENGTH, FORECAST_HORIZON
 from utils.data_fetcher import fetch_weather_data, fetch_inflow_data
 from utils.data_processor import preprocess_data, prepare_sequences
@@ -32,4 +33,25 @@ except Exception as e:
     st.error(f"Error fetching data: {str(e)}")
 
 # Preprocess data
-if inflow_data is not None
+if inflow_data is not None:
+    dataset = preprocess_data(weather_data, inflow_data, parameter)
+    st.write("Data preprocessing completed!")
+
+    # Create plots for temperature and precipitation
+    st.header("Temperature and Precipitation for Sogndalsvatn")
+    fig_weather = plot_weather_data(dataset, '1')  # Assuming '1' is the suffix for the first weather data
+    st.plotly_chart(fig_weather)
+
+    # Prepare sequences for prediction
+    st.header("Making Predictions")
+    X, y = prepare_sequences(dataset, parameter)
+    model = load_model(parameter)
+    y_pred = model.predict(X)
+    st.success("Predictions completed!")
+
+    # Display prediction results
+    st.header("Prediction Results")
+    fig_predictions = plot_predictions(dataset, y_pred, parameter)
+    st.plotly_chart(fig_predictions)
+else:
+    st.error("Failed to fetch inflow data.")
