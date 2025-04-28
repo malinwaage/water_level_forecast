@@ -43,8 +43,8 @@ forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
 today = datetime.now()  
 #start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
 #end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
-start_date = st.sidebar.date_input("Start Date", '2025-04-20')
-end_date = st.sidebar.date_input("End Date", '2025-04-28')
+start_date = st.sidebar.date_input("Start Date", (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))
+end_date = st.sidebar.date_input("End Date", (datetime.now() + timedelta(days=3)).strftime('%Y-%m-%d'))
 
 #.strftime('%d.%m.%Y')
 # Load the trained model based on selected parameter
