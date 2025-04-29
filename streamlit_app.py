@@ -243,13 +243,13 @@ Actual_2steps_ahead_waterlevel = y[:, 1]
 
 # Create a date range for the test set
 date_range = pd.date_range(start=start_date, periods=len(Two_steps_ahead_predictions), freq='3H')
-shifted_date_range = date_range + timedelta(hours=3)
+#shifted_date_range = date_range + timedelta(hours=3)
 
 # Create a DataFrame for plotting
 plot_df = pd.DataFrame({
     'Actual': Actual_2steps_ahead_waterlevel,
     'Predicted': Two_steps_ahead_predictions
-}, index=shifted_date_range)
+}, index=date_range)
 
 
 # Create the plot
