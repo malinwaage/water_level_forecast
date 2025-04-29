@@ -166,11 +166,11 @@ def prepare_sequences(dataset, parameter):  # Add 'parameter' argument
     
 def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
-    #y_pred_6h = y_pred[:, 2]
+    y_pred_6h = y_pred[:, 2]
     date_range = pd.date_range(start=start_date, periods=len(y_pred_6h), freq='3H')
     shifted_date_range = date_range + timedelta(hours=-6)
     plot_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
-    plot_df_past = pd.DataFrame({'past_6h_pred':y_pred[:, 2]}, index=shifted_date_range)
+    plot_df_past = pd.DataFrame({'past_6h_pred': y_pred[:, 2]}, index=shifted_date_range)
        # Creating a DataFrame for the shifted predictions
     #shifted_future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
     #shifted_plot_df = pd.DataFrame({'Shifted Prediction': y_pred_shifted[-1]}, index=shifted_future_date_range)
