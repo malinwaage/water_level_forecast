@@ -164,7 +164,7 @@ def prepare_sequences(dataset, parameter):  # Add 'parameter' argument
 # Function to plot predictions
 
     
-d#old
+#old
 def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
     plot_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
