@@ -8,7 +8,6 @@ import plotly.graph_objects as go
 import streamlit as st
 import requests_html
 from requests_html import HTMLSession
-from datetime import datetime, timedelta
 import pandas as pd
 import plotly
 
