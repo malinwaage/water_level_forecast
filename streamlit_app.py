@@ -302,5 +302,5 @@ mae = mean_absolute_error(Actual_day_ahead, Day_ahead_predictions)
 # Display MAE in the Streamlit app
 #st.write(f"Mean Absolute Error (MAE): {mae:.2f}") 
 if parameter == "1000": st.write(f"The average prediction error in cm is: {mae*100:.2f}")
-else: st.write(f"The average prediction error in m3/s is: {mae:.2f}")
-st.write(f"R² score (Day_ahead_predictions): {r2:.2f}")
+else: st.write(f"The average prediction error 12 hours ahead in m3/s is: {mae:.2f}")
+st.write(f"R² score (between actual and forecasted 12 hours ahead): {r2:.2f}")
