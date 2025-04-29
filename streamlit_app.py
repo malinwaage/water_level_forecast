@@ -180,7 +180,7 @@ def plot_predictions(dataset, y_pred, y_pred_shifted, parameter):  # Add paramet
     data_column = 'waterlevel' if parameter == "1000" else 'discharge'  
     fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset[data_column], mode='lines', name='Past measures', line=dict(color='blue')))
     fig.add_trace(go.Scatter(x=plot_df.index, y=plot_df['Predicted'], mode='lines', name='Predicted measures', line=dict(color='red')))
-    fig.add_trace(go.Scatter(x=dataset.index[:-Forecast_Horizon], y=y_pred_shifted, mode='lines', name='Past prediction (6-hour ahead)', line=dict(color='green', dash='dash')))
+    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=y_pred_shifted, mode='lines', name='Past prediction (6-hour ahead)', line=dict(color='green', dash='dash')))
 
     # Update title based on parameter
     title = 'Water Level Prediction for Sogndalsvatn' if parameter == "1000" else 'Inflow Prediction for Sogndalsvatn'
