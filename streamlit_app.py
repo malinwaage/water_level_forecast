@@ -32,6 +32,9 @@ This application predicts water levels and inflow for Sogndalsvatn using a GRU-b
 It uses temperature, precipitation, and historical data for forecasts several days in advance on a three-hour basis.
 Tests showed 99%-92% accuracy for water level predictions and 91%-78% accuracy for discharge predictions, depending on the predicted 
 horizon between three hours and three days. Data is collected from NVE's open APIs.
+
+All code contributed by Malin Waage (github:malinwaage)
+is licensed under Attribution 4.0 International
 """)
 
 
