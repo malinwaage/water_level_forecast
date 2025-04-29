@@ -170,7 +170,7 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     date_range = pd.date_range(start=start_date, periods=len(y_pred_6h), freq='3H')
     #shifted_date_range = date_range + timedelta(hours=-6)
     plot_df = pd.DataFrame({'Predicted': y_pred[-1]}, index=future_date_range)
-    plot_df_past = pd.DataFrame({'past_6h_pred': y_pred[:, 2]}, index=date_range)
+    plot_df_past = pd.DataFrame({'past_6h_pred': y_pred[:, 1]}, index=dataset[:-FORECAST_HORIZON])
        # Creating a DataFrame for the shifted predictions
     #shifted_future_date_range = pd.date_range(end=dataset.index[-1], periods=FORECAST_HORIZON + 1, freq='3h')[1:]
     #shifted_plot_df = pd.DataFrame({'Shifted Prediction': y_pred_shifted[-1]}, index=shifted_future_date_range)
@@ -182,7 +182,7 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
     data_column = 'waterlevel' if parameter == "1000" else 'discharge'  
     fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=dataset[data_column], mode='lines', name='Past measures', line=dict(color='blue')))
     fig.add_trace(go.Scatter(x=plot_df.index, y=plot_df['Predicted'], mode='lines', name='Predicted measures', line=dict(color='red')))
-    fig.add_trace(go.Scatter(x=plot_df_past.index, y=y_pred_6h, mode='lines', name='Past prediction (6-hour ahead)', line=dict(color='green', dash='dash')))
+    fig.add_trace(go.Scatter(x=dataset.index[:-FORECAST_HORIZON], y=y_pred_6h, mode='lines', name='Past prediction (6-hour ahead)', line=dict(color='green')))
 
     # Update title based on parameter
     title = 'Water Level Prediction for Sogndalsvatn' if parameter == "1000" else 'Inflow Prediction for Sogndalsvatn'
