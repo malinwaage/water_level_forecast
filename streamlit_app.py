@@ -51,7 +51,7 @@ end_date = st.sidebar.date_input("End Date", (datetime.now() + timedelta(forecas
 #@st.cache_resource
 def load_model(parameter): 
     if parameter == "1000":
-        model = tf.keras.models.load_model('my_GRU_model_tuned_waterlevel4.keras')
+        model = tf.keras.models.load_model('my_GRU_model_waterlevel.keras')
     elif parameter == "1001":
         model = tf.keras.models.load_model('my_GRU_model_discharge3.keras')
     return model
