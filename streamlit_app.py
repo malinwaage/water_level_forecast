@@ -138,11 +138,25 @@ def preprocess_data(weather_data, inflow_data, parameter):
     inflow_column = 'waterlevel' if parameter == "1000" else 'discharge'
     dataset = dataset.rename(columns={'value': inflow_column})
     dataset = dataset.mask(dataset > 1000)
+    from sklearn.preprocessing import StandardScaler
 
-    for column in dataset.columns:
-        if column != inflow_column:
-            dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
-            dataset = dataset.interpolate(method='linear', limit_direction='both')
+    import pickle
+    with open('scaler.pkl', 'rb') as f:
+        scaler = pickle.load(f)
+
+    # Transform your data using the fitted scaler
+    scaled_data = scaler.transform(dataset.drop(columns=[inflow_column]))
+
+    # Create a new DataFrame with the scaled data and the original 'inflow' column
+    df_scaled = pd.DataFrame(scaled_data, columns=dataset.drop(columns=[inflow_column]).columns, index=dataset.index)
+    df_scaled[inflow_column] = dataset[inflow_column]
+
+    dataset = df_scaled.copy()
+    
+    #for column in dataset.columns:
+    #    if column != inflow_column:
+    #        dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
+    #        dataset = dataset.interpolate(method='linear', limit_direction='both')
     return dataset
     
 
