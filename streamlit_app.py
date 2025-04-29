@@ -271,7 +271,7 @@ fig.add_trace(go.Scatter(
 
 fig.add_trace(go.Scatter(
     x=plot_df.index,
-    y=plot_df['y_pred'],
+    y=plot_df['Predicted'],
     mode='lines',
     name='Predicted 12 hours ahead - historic data',
     line=dict(color='red')  # You can customize the line style
