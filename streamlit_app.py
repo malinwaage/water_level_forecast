@@ -243,13 +243,13 @@ Actual_2steps_ahead_waterlevel = y[:, 1]
 
 # Create a date range for the test set
 date_range = pd.date_range(start=start_date, periods=len(Two_steps_ahead_predictions), freq='3H')
-#shifted_date_range = date_range + timedelta(hours=3)
+shifted_date_range = date_range + timedelta(hours=3)
 
 # Create a DataFrame for plotting
 plot_df = pd.DataFrame({
     'Actual': Actual_2steps_ahead_waterlevel,
     'Predicted': Two_steps_ahead_predictions
-}, index=date_range)
+}, index=shifted_date_range)
 
 
 # Create the plot
@@ -259,16 +259,16 @@ fig.add_trace(go.Scatter(
     x=plot_df.index,
     y=plot_df['Actual'],
     mode='lines',
-    name='Actual',
+    name='Actual 3 hours ahead - past data',
     line=dict(color='blue')
 ))
 
 fig.add_trace(go.Scatter(
     x=plot_df.index,
-    y=plot_df['Predicted'],
+    y=plot_df['Predicted 3 hours ahead - past data'],
     mode='lines',
     name='Predicted',
-    line=dict(color='red', dash='dash')  # You can customize the line style
+    line=dict(color='red')  # You can customize the line style
 ))
 
 # Update x-axis to display dates correctly
