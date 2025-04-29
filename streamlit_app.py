@@ -236,14 +236,11 @@ if inflow_data is not None:
 else:
     st.error("Failed to fetch inflow data.")
 
-# Apply rolling mean along the second axis (sequence axis) with a window of 3
-y_pred_smoothed = y_pred.rolling(window=3, axis=1, min_periods=1).mean()
-# Convert back to NumPy array for further processing
-y_pred = y_pred_smoothed.values
 
 # Extract two-steps-ahead predictions and actual values
 Day_ahead_predictions = y_pred[:, 4]
 Actual_day_ahead = y[:, 4]
+
 
 # Create a date range for the test set
 date_range = pd.date_range(start=start_date, periods=len(Day_ahead_predictions), freq='3H')
@@ -255,6 +252,10 @@ plot_df = pd.DataFrame({
     'Predicted': Day_ahead_predictions
 }, index=shifted_date_range)
 
+# Apply rolling mean along the second axis (sequence axis) with a window of 3
+plot_df["y_pred_smoothed"] = plot_df[Day_ahead_predictions].rolling(window=3, axis=1, min_periods=1).mean()
+# Convert back to NumPy array for further processing
+#y_pred = y_pred_smoothed.values
 
 # Create the plot
 fig = go.Figure()
@@ -269,7 +270,7 @@ fig.add_trace(go.Scatter(
 
 fig.add_trace(go.Scatter(
     x=plot_df.index,
-    y=plot_df['Predicted'],
+    y=plot_df['y_pred_smoothed'],
     mode='lines',
     name='Predicted 12 hours ahead - historic data',
     line=dict(color='red')  # You can customize the line style
