@@ -238,12 +238,12 @@ else:
 
 
 # Extract two-steps-ahead predictions and actual values
-Two_steps_ahead_predictions = y_pred[:, 1]
-Actual_2steps_ahead_waterlevel = y[:, 1]
+Two_steps_ahead_predictions = y_pred[:, 8]
+Actual_2steps_ahead_waterlevel = y[:, 8]
 
 # Create a date range for the test set
 date_range = pd.date_range(start=start_date, periods=len(Two_steps_ahead_predictions), freq='3H')
-shifted_date_range = date_range + timedelta(hours=3)
+shifted_date_range = date_range + timedelta(hours=24)
 
 # Create a DataFrame for plotting
 plot_df = pd.DataFrame({
