@@ -26,15 +26,15 @@ SEQUENCE_LENGTH = 24
 FORECAST_HORIZON = 24
 
 # Streamlit Inputs
-st.title("Water Level/Discharge Prediction for Sogndalsvatn") # Updated title
-
-# Add description
+st.title("🌊 Water Level/Discharge Prediction for Sogndalsvatn")
 st.write("""
-This application predicts water levels and inflow for Sogndalsvatn using a GRU-based deep learning model, 
-which outperformed other methods. It uses temperature, precipitation, and historical data for forecasts 
-several days in advance on a three-hour basis. Tests showed 99%-92% accuracy for water level predictions 
-and 91%-78% accuracy for discharge predictions. Data is collected from NVE's open APIs.
+This application predicts water levels and inflow for Sogndalsvatn using a GRU-based deep learning model. 
+It uses temperature, precipitation, and historical data for forecasts several days in advance on a three-hour basis.
+Tests showed 99%-92% accuracy for water level predictions and 91%-78% accuracy for discharge predictions, depending on the predicted 
+horizon between three hours and three days. Data is collected from NVE's open APIs.
 """)
+
+
 st.sidebar.header("User Inputs")
 station_id = st.sidebar.text_input("Station ID", "77.3.0")
 parameter = st.sidebar.selectbox("Parameter (1001:inflow/discharge, 1000:water-level)", ["1000", "1001"], index=0)  # Selectbox for parameter
