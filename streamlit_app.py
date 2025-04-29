@@ -238,12 +238,12 @@ else:
 
 
 # Extract two-steps-ahead predictions and actual values
-Day_ahead_predictions = y_pred[:, 2]
-Actual_day_ahead = y[:, 2]
+Day_ahead_predictions = y_pred[:, 4]
+Actual_day_ahead = y[:, 4]
 
 # Create a date range for the test set
 date_range = pd.date_range(start=start_date, periods=len(Day_ahead_predictions), freq='3H')
-shifted_date_range = date_range + timedelta(hours=6)
+shifted_date_range = date_range + timedelta(hours=12)
 
 # Create a DataFrame for plotting
 plot_df = pd.DataFrame({
@@ -259,7 +259,7 @@ fig.add_trace(go.Scatter(
     x=plot_df.index,
     y=plot_df['Actual'],
     mode='lines',
-    name='Actual 6 hours ahead - historic data',
+    name='Actual 12 hours ahead - historic data',
     line=dict(color='blue')
 ))
 
@@ -267,7 +267,7 @@ fig.add_trace(go.Scatter(
     x=plot_df.index,
     y=plot_df['Predicted'],
     mode='lines',
-    name='Predicted 6 hours ahead - historic data',
+    name='Predicted 12 hours ahead - historic data',
     line=dict(color='red')  # You can customize the line style
 ))
 
