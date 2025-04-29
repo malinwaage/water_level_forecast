@@ -253,7 +253,8 @@ plot_df = pd.DataFrame({
 }, index=shifted_date_range)
 
 # Apply rolling mean along the second axis (sequence axis) with a window of 3
-plot_df["y_pred_smoothed"] = plot_df[Day_ahead_predictions].rolling(window=3, axis=1, min_periods=1).mean()
+plot_df["y_pred_smoothed"] = plot_df['Predicted'].rolling(window=3, axis=0, min_periods=1).mean()
+
 # Convert back to NumPy array for further processing
 #y_pred = y_pred_smoothed.values
 
