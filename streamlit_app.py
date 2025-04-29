@@ -133,25 +133,20 @@ def fetch_inflow_data(station_id, parameter, start_date, end_date):
 
 
 # Preprocess data function
-def preprocess_data(weather_data, inflow_data, parameter, scaler):
+def preprocess_data(weather_data, inflow_data, parameter):
+    min_max_values = {}
     dataset = weather_data.join(inflow_data)
     inflow_column = 'waterlevel' if parameter == "1000" else 'discharge'
     dataset = dataset.rename(columns={'value': inflow_column})
     dataset = dataset.mask(dataset > 1000)
-
-    # Scale features using the loaded scaler
-    try:
-        features_to_scale = dataset.drop(columns=[inflow_column]).values
-        scaled_features = scaler.transform(features_to_scale)
-        dataset.loc[:, dataset.columns != inflow_column] = scaled_features
-    except ValueError as e:
-        st.error(f"Scaler is incompatible with the features: {e}")
-        return None
-
-    dataset = dataset.interpolate(method='linear', limit_direction='both')
+  
+    for column in dataset.columns:
+        if column != inflow_column:
+            dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
+            dataset = dataset.interpolate(method='linear', limit_direction='both')
     return dataset
     
-    
+
 
 # Function to prepare sequences
 def prepare_sequences(dataset, parameter):  # Add 'parameter' argument
@@ -226,11 +221,11 @@ model = load_model(parameter)
 weather_data = fetch_weather_data(start_date, end_date)
 inflow_data = fetch_inflow_data(station_id, parameter, start_date, end_date)
 
-if inflow_data is not None and scaler is not None:
-    st.success("Data and scaler loaded successfully!")
+if inflow_data is not None:
+    st.success("Data loaded successfully!")
     
     st.header("Preprocessing Data")
-    dataset = preprocess_data(weather_data, inflow_data, parameter, scaler)
+    dataset = preprocess_data(weather_data, inflow_data, parameter)
 
     st.write("Data preprocessing completed!")
     
