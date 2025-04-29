@@ -236,7 +236,7 @@ if inflow_data is not None:
 
     st.success("Predictions completed!")
     y_pred = model.predict(X)
-    y_pred_shifted = np.roll(y_pred[:, 2], shift=2)
+    y_pred_shifted = y_pred[:, 2], shift=2)
     y_pred_shifted[:2] = np.nan  # Fill the first two shifted positions with NaN, as they are invalid
     st.success("Predictions completed!")
 
