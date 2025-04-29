@@ -42,7 +42,7 @@ forecast_days = st.sidebar.slider("Forecast Days", 1, 2, 3)
 today = datetime.now()  
 #start_date = st.sidebar.date_input("Start Date", datetime.now() - timedelta(days=7))
 #end_date = st.sidebar.date_input("End Date", datetime.now() + timedelta(days=forecast_days))
-start_date = st.sidebar.date_input("Start Date", (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d'))
+start_date = st.sidebar.date_input("Start Date", (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d'))
 #end_date = st.sidebar.date_input("End Date", (datetime.now() + timedelta(days=3)).strftime('%Y-%m-%d'))
 end_date = st.sidebar.date_input("End Date", (datetime.now() + timedelta(forecast_days)).strftime('%Y-%m-%d'))
 
@@ -253,7 +253,7 @@ plot_df = pd.DataFrame({
 }, index=shifted_date_range)
 
 # Apply rolling mean along the second axis (sequence axis) with a window of 3
-plot_df['y_pred_smoothed'] = plot_df['Predicted'].rolling(window=6, axis=0, min_periods=1).mean()
+#plot_df['y_pred_smoothed'] = plot_df['Predicted'].rolling(window=6, axis=0, min_periods=1).mean()
 
 # Convert back to NumPy array for further processing
 #y_pred = y_pred_smoothed.values
@@ -271,7 +271,7 @@ fig.add_trace(go.Scatter(
 
 fig.add_trace(go.Scatter(
     x=plot_df.index,
-    y=plot_df['y_pred_smoothed'],
+    y=plot_df['y_pred'],
     mode='lines',
     name='Predicted 12 hours ahead - historic data',
     line=dict(color='red')  # You can customize the line style
