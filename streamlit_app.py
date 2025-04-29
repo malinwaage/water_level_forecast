@@ -234,3 +234,49 @@ if inflow_data is not None:
     st.plotly_chart(fig)
 else:
     st.error("Failed to fetch inflow data.")
+
+
+
+# Extract two-steps-ahead predictions and actual values
+Two_steps_ahead_predictions = y_pred[:, 2]
+Actual_2steps_ahead_waterlevel = y[:, 2]
+
+# Create a date range for the test set
+date_range = pd.date_range(start=start_date, periods=len(Two_steps_ahead_predictions), freq='3H')
+shifted_date_range = date_range + timedelta(hours=6)
+
+# Create a DataFrame for plotting
+plot_df = pd.DataFrame({
+    'Actual': Actual_2steps_ahead_waterlevel,
+    'Predicted': Two_steps_ahead_predictions
+}, index=shifted_date_range)
+
+
+# Create the plot
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=plot_df.index,
+    y=plot_df['Actual'],
+    mode='lines',
+    name='Actual',
+    line=dict(color='blue')
+))
+
+fig.add_trace(go.Scatter(
+    x=plot_df.index,
+    y=plot_df['Predicted'],
+    mode='lines',
+    name='Predicted',
+    line=dict(color='red', dash='dash')  # You can customize the line style
+))
+
+# Update x-axis to display dates correctly
+fig.update_xaxes(
+    tickmode='auto',  # Automatically determine tick positions
+    nticks=10,        # Set the approximate number of ticks you want
+    tickformat="%Y-%m-%d"  # Format the tick labels as 'YYYY-MM-DD'
+)
+
+# Render in Streamlit app
+st.plotly_chart(fig)
