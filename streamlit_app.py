@@ -238,12 +238,12 @@ else:
 
 
 # Extract two-steps-ahead predictions and actual values
-Day_ahead_predictions = y_pred[:, 8]
-Actual_day_ahead = y[:, 8]
+Day_ahead_predictions = y_pred[:, 1]
+Actual_day_ahead = y[:, 1]
 
 # Create a date range for the test set
 date_range = pd.date_range(start=start_date, periods=len(Day_ahead_predictions), freq='3H')
-shifted_date_range = date_range + timedelta(hours=24)
+shifted_date_range = date_range + timedelta(hours=3)
 
 # Create a DataFrame for plotting
 plot_df = pd.DataFrame({
@@ -288,4 +288,11 @@ r2 = r2_score(Actual_day_ahead, Day_ahead_predictions)
 
 # Display R² score in the Streamlit app
 st.header("Model Performance")
+from sklearn.metrics import mean_absolute_error
+
+# Calculate MAE
+mae = mean_absolute_error(Actual_day_ahead, Day_ahead_predictions)
+
+# Display MAE in the Streamlit app
+st.write(f"Mean Absolute Error (MAE): {mae:.4f}")
 st.write(f"R² score (Day_ahead_predictions): {r2:.4f}")
