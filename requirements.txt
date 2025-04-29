@@ -4,4 +4,4 @@ streamlit
 lxml_html_clean
 tensorflow 
 pyngrok
-sklearn.metrics
+sklearn
