@@ -131,18 +131,26 @@ def fetch_inflow_data(station_id, parameter, start_date, end_date):
     st.error("Failed to fetch inflow data.")
     return none
 
-def preprocess_data(weather_data, inflow_data, parameter):
-    min_max_values = {}
+
+# Preprocess data function
+def preprocess_data(weather_data, inflow_data, parameter, scaler):
     dataset = weather_data.join(inflow_data)
     inflow_column = 'waterlevel' if parameter == "1000" else 'discharge'
     dataset = dataset.rename(columns={'value': inflow_column})
     dataset = dataset.mask(dataset > 1000)
-  
-    for column in dataset.columns:
-        if column != inflow_column:
-            dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
-            dataset = dataset.interpolate(method='linear', limit_direction='both')
+
+    # Scale features using the loaded scaler
+    try:
+        features_to_scale = dataset.drop(columns=[inflow_column]).values
+        scaled_features = scaler.transform(features_to_scale)
+        dataset.loc[:, dataset.columns != inflow_column] = scaled_features
+    except ValueError as e:
+        st.error(f"Scaler is incompatible with the features: {e}")
+        return None
+
+    dataset = dataset.interpolate(method='linear', limit_direction='both')
     return dataset
+    
     
 
 # Function to prepare sequences
@@ -204,17 +212,25 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
    # return fig
 
 # Main Streamlit App
+
+
+# Main Streamlit App
+    
 st.header("Fetching Data")
+st.title("Water Level/Discharge Prediction for Sogndalsvatn")
+
+# Load the scaler
+scaler = load_scaler('scaler2.pkl')
+model = load_model(parameter)
+# Fetch data and preprocess
 weather_data = fetch_weather_data(start_date, end_date)
 inflow_data = fetch_inflow_data(station_id, parameter, start_date, end_date)
 
-
-model = load_model(parameter)
-if inflow_data is not None:
-    st.success("Data fetched successfully!")
-
+if inflow_data is not None and scaler is not None:
+    st.success("Data and scaler loaded successfully!")
+    
     st.header("Preprocessing Data")
-    dataset = preprocess_data(weather_data, inflow_data, parameter)  # Pass 'parameter' here
+    dataset = preprocess_data(weather_data, inflow_data, parameter, scaler)
 
     st.write("Data preprocessing completed!")
     
