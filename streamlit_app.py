@@ -238,17 +238,17 @@ else:
 
 
 # Extract two-steps-ahead predictions and actual values
-Two_steps_ahead_predictions = y_pred[:, 8]
-Actual_2steps_ahead_waterlevel = y[:, 8]
+Day_ahead_predictions = y_pred[:, 8]
+Actual_day_ahead = y[:, 8]
 
 # Create a date range for the test set
-date_range = pd.date_range(start=start_date, periods=len(Two_steps_ahead_predictions), freq='3H')
+date_range = pd.date_range(start=start_date, periods=len(Day_ahead_predictions), freq='3H')
 shifted_date_range = date_range + timedelta(hours=24)
 
 # Create a DataFrame for plotting
 plot_df = pd.DataFrame({
-    'Actual': Actual_2steps_ahead_waterlevel,
-    'Predicted': Two_steps_ahead_predictions
+    'Actual': Actual_day_ahead,
+    'Predicted': Day_ahead_predictions
 }, index=shifted_date_range)
 
 
@@ -280,3 +280,12 @@ fig.update_xaxes(
 
 # Render in Streamlit app
 st.plotly_chart(fig)
+
+from sklearn.metrics import r2_score
+
+# Calculate R² score
+r2 = r2_score(Actual_day_ahead, Day_ahead_predictions)
+
+# Display R² score in the Streamlit app
+st.header("Model Performance")
+st.write(f"R² score (Day_ahead_predictions): {r2:.4f}")
