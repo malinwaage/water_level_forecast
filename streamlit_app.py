@@ -238,12 +238,12 @@ else:
 
 
 # Extract two-steps-ahead predictions and actual values
-Day_ahead_predictions = y_pred[:, 1]
-Actual_day_ahead = y[:, 1]
+Day_ahead_predictions = y_pred[:, 2]
+Actual_day_ahead = y[:, 2]
 
 # Create a date range for the test set
 date_range = pd.date_range(start=start_date, periods=len(Day_ahead_predictions), freq='3H')
-shifted_date_range = date_range + timedelta(hours=3)
+shifted_date_range = date_range + timedelta(hours=6)
 
 # Create a DataFrame for plotting
 plot_df = pd.DataFrame({
@@ -259,7 +259,7 @@ fig.add_trace(go.Scatter(
     x=plot_df.index,
     y=plot_df['Actual'],
     mode='lines',
-    name='Actual 24 hours ahead - historic data',
+    name='Actual 6 hours ahead - historic data',
     line=dict(color='blue')
 ))
 
@@ -267,7 +267,7 @@ fig.add_trace(go.Scatter(
     x=plot_df.index,
     y=plot_df['Predicted'],
     mode='lines',
-    name='Predicted 24 hours ahead - historic data',
+    name='Predicted 6 hours ahead - historic data',
     line=dict(color='red')  # You can customize the line style
 ))
 
@@ -295,6 +295,6 @@ mae = mean_absolute_error(Actual_day_ahead, Day_ahead_predictions)
 
 # Display MAE in the Streamlit app
 #st.write(f"Mean Absolute Error (MAE): {mae:.2f}") 
-if parameter == "1000": st.write(f"The average prediction error in cm is: {mae:.2f} *100")
+if parameter == "1000": st.write(f"The average prediction error in cm is: {mae*100:.2f}")
 else: st.write(f"The average prediction error in m3/s is: {mae:.2f}")
 st.write(f"R² score (Day_ahead_predictions): {r2:.2f}")
