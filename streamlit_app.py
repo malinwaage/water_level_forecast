@@ -141,7 +141,7 @@ def preprocess_data(weather_data, inflow_data, parameter):
     from sklearn.preprocessing import StandardScaler
 
     import pickle
-    with open('scaler.pkl', 'rb') as f:
+    with open('scaler2.pkl', 'rb') as f:
         scaler = pickle.load(f)
 
     # Transform your data using the fitted scaler
