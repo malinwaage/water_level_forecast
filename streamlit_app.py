@@ -54,7 +54,7 @@ end_date = st.sidebar.date_input("End Date", (datetime.now() + timedelta(forecas
 #@st.cache_resource
 def load_model(parameter): 
     if parameter == "1000":
-        model = tf.keras.models.load_model('GRU_waterlevel_128_48_32_DO_N.keras')
+        model = tf.keras.models.load_model('GRU_waterlevel_model.keras')
     elif parameter == "1001":
         model = tf.keras.models.load_model('my_GRU_model_discharge3.keras')
     return model
@@ -82,8 +82,8 @@ import tensorflow as tf
 def fetch_weather_data(start_date, end_date):
     xcoord = [70022, 67095, 62755, 70175]
     ycoord = [6825600, 6835892, 6828763, 6830460]
-    #attributes = ['rr3h', 'tm3h']
-    attributes = ['rr3h','tm3h', 'windDirection10m3h' ]
+    attributes = ['rr3h', 'tm3h']
+    #attributes = ['rr3h','tm3h', 'windDirection10m3h' ]
     ind = pd.date_range(start=start_date, end=end_date, freq='3h')
     df_weather = pd.DataFrame(index=ind)
     session = HTMLSession()
