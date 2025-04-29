@@ -215,7 +215,7 @@ st.header("Fetching Data")
 st.title("Water Level/Discharge Prediction for Sogndalsvatn")
 
 # Load the scaler
-scaler = load_scaler('scaler2.pkl')
+#scaler = load_scaler('scaler2.pkl')
 model = load_model(parameter)
 # Fetch data and preprocess
 weather_data = fetch_weather_data(start_date, end_date)
