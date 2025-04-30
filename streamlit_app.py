@@ -139,11 +139,22 @@ def preprocess_data(weather_data, inflow_data, parameter):
     inflow_column = 'waterlevel' if parameter == "1000" else 'discharge'
     dataset = dataset.rename(columns={'value': inflow_column})
     dataset = dataset.mask(dataset > 1000)
-  
-    for column in dataset.columns:
-        if column != inflow_column:
-            dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
-            dataset = dataset.interpolate(method='linear', limit_direction='both')
+    dataset = dataset.interpolate(method='linear', limit_direction='both')
+
+    # Scale 'rr' columns in 'df' and limit to 3 decimals
+    rr_columns = [col for col in dataset.columns if 'rr' in col]
+    for column in rr_columns:
+        dataset[column] = dataset[column].apply(lambda x: round((x - rr_min) / (rr_max - rr_min), 3))
+
+# Scale 'tm' columns in 'df' and limit to 3 decimals
+    tm_columns = [col for col in df.columns if 'tm' in col]
+    for column in tm_columns:
+        dataset[column] = dataset[column].apply(lambda x: round((x - tm_min) / (tm_max - tm_min), 3))
+
+
+    #for column in dataset.columns:
+    #    if column != inflow_column:
+    #        dataset[column] = (dataset[column] - dataset[column].min()) / (dataset[column].max() - dataset[column].min())
     return dataset
     
 
@@ -214,8 +225,17 @@ def plot_predictions(dataset, y_pred, parameter):  # Add parameter argument
 st.header("Fetching Data")
 st.title("Water Level/Discharge Prediction for Sogndalsvatn")
 
-# Load the scaler
+
+# Load the scalars
+with open('scalars_tm_rr_sogndalsvatn.pkl', 'rb') as f:
+    scalars = pickle.load(f)
+    rr_min = scalars['rr_min']
+    rr_max = scalars['rr_max']
+    tm_min = scalars['tm_min']
+    tm_max = scalars['tm_max']
 #scaler = load_scaler('scaler2.pkl')
+
+#load the model 
 model = load_model(parameter)
 # Fetch data and preprocess
 weather_data = fetch_weather_data(start_date, end_date)
