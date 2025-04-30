@@ -149,7 +149,7 @@ def preprocess_data(weather_data, inflow_data, parameter):
         dataset[column] = dataset[column].apply(lambda x: round((x - rr_min) / (rr_max - rr_min), 3))
 
 # Scale 'tm' columns in 'df' and limit to 3 decimals
-    tm_columns = [col for col in df.columns if 'tm' in col]
+    tm_columns = [col for col in dataset.columns if 'tm' in col]
     for column in tm_columns:
         dataset[column] = dataset[column].apply(lambda x: round((x - tm_min) / (tm_max - tm_min), 3))
 
