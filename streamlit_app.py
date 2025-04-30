@@ -10,6 +10,8 @@ import requests_html
 from requests_html import HTMLSession
 import pandas as pd
 import plotly
+import pickle
+
 
 #from google.colab import drive
 #drive.mount('/content/drive')
